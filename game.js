@@ -252,10 +252,29 @@ function renderMap() {
             }
         }
     }
+    drawText("Money:  100", 4, 4 + 8 * 0);
+    drawText("Food:   100", 4, 4 + 8 * 1);
+    drawText("Energy: 100", 4, 4 + 8 * 2);
 }
 
 function getTile(x, y) {
     if (x < 0 || y < 0 || x >= mapWidth || y >= mapHeight) return level[0];
     else return level[x + y * mapWidth];
+}
 
+
+var tileCharacters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ      " +
+    "0123456789.,!?'\":;()+-=*/\%     ";
+
+function drawText(text, x, y) {
+    text = text.toUpperCase();
+    var mapCanvas = document.getElementById("map");
+    var map2d = mapCanvas.getContext("2d");
+    for (var i = 0; i < text.length; i++) {
+        var index = tileCharacters.indexOf(text.charAt(i));
+        var xt = 0 + index % 32;
+        var yt = 30 + (index >> 5);
+        map2d.drawImage(tileImage, xt * 8, yt * 8, 8, 8, x + i * 8, y, 8, 8);
+    }
 }
