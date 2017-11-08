@@ -104,7 +104,6 @@ var selectedY = 0;
 function clickTile(xTile, yTile) {
     if (xTile >= 0 && yTile >= 0 && xTile < mapWidth && yTile < mapHeight) {
         var tile = getTile(xTile, yTile);
-        tile.land = !tile.land;
         tile.owned = !tile.owned;
         /*
         if (level[xTile + yTile * mapWidth].owned) {
@@ -204,12 +203,14 @@ function renderMap() {
 
                     map2d.drawImage(tileImage, xt * 8, yt * 8, 8, 8, x * tileSize + xOffs + i % 2 * 8, y * tileSize + yOffs + (i >> 1) * 8, 8, 8);
                 }
-
-                /*
-                map2d.drawImage(tileImage, 1 * 8, 1 * 8, 8, 8, x * tileSize + xOffs + 8, y * tileSize + yOffs + 0, 8, 8);
-                map2d.drawImage(tileImage, 1 * 8, 1 * 8, 8, 8, x * tileSize + xOffs + 0, y * tileSize + yOffs + 8, 8, 8);
-                map2d.drawImage(tileImage, 1 * 8, 1 * 8, 8, 8, x * tileSize + xOffs + 8, y * tileSize + yOffs + 8, 8, 8);
-                */
+            }
+            if (tile.owned) {
+                if (tile.land == 1) {
+                    map2d.drawImage(tileImage, 0 * 8, 9 * 8, 16, 16, x * tileSize + xOffs, y * tileSize + yOffs, 16, 16);
+                }
+                if (tile.land == 3) {
+                    map2d.drawImage(tileImage, 2 * 8, 9 * 8, 16, 16, x * tileSize + xOffs, y * tileSize + yOffs, 16, 16);
+                }
             }
         }
     }
@@ -252,9 +253,14 @@ function renderMap() {
             }
         }
     }
-    drawText("Money:  100", 4, 4 + 8 * 0);
-    drawText("Food:   100", 4, 4 + 8 * 1);
+    drawText("Money: 100", 4, 4 + 8 * 0);
+    drawText("Food: 100", 4, 4 + 8 * 1);
     drawText("Energy: 100", 4, 4 + 8 * 2);
+    drawText("Water: 100", 4, 4 + 8 * 3);
+
+    for (var i = 0; i < 8; i++) {
+        drawCard("water", 335, 0 + i * 20);
+    }
 }
 
 function getTile(x, y) {
@@ -267,6 +273,20 @@ var tileCharacters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ      " +
     "0123456789.,!?'\":;()+-=*/\%     ";
 
+
+function drawCard(text, x, y) {
+    var mapCanvas = document.getElementById("map");
+    var map2d = mapCanvas.getContext("2d");
+    //map2d.drawImage(tileImage, 2 * 8, 9 * 8, 16, 16, x * tileSize + xOffs, y * tileSize + yOffs, 16, 16);
+    map2d.drawImage(tileImage, 0 * 8, 128, 16, 16, x, y, 16, 16);
+    /*map2d.drawImage(tileImage, 0 * 8, 21 * 8, 5 * 8, 7 * 8, x, y, 5 * 8, 7 * 8);
+    drawTextSmall(text, x + 4, y + 3);
+    drawTextSmall("water", x + 4, y + 27 + 0 * 6);
+    drawTextSmall("resource", x + 4, y + 27 + 1 * 6);
+    drawTextSmall("cost 10", x + 4, y + 29 + 3 * 6);
+    */
+}
+
 function drawText(text, x, y) {
     text = text.toUpperCase();
     var mapCanvas = document.getElementById("map");
@@ -276,5 +296,17 @@ function drawText(text, x, y) {
         var xt = 0 + index % 32;
         var yt = 30 + (index >> 5);
         map2d.drawImage(tileImage, xt * 8, yt * 8, 8, 8, x + i * 8, y, 8, 8);
+    }
+}
+
+function drawTextSmall(text, x, y) {
+    text = text.toUpperCase();
+    var mapCanvas = document.getElementById("map");
+    var map2d = mapCanvas.getContext("2d");
+    for (var i = 0; i < text.length; i++) {
+        var index = tileCharacters.indexOf(text.charAt(i));
+        var xt = index % 32;
+        var yt = (index >> 5);
+        map2d.drawImage(tileImage, xt * 4, 28 * 8 + yt * 6, 4, 6, x + i * 4, y, 4, 6);
     }
 }
